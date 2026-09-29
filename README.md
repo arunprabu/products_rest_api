@@ -167,10 +167,29 @@ curl 'http://localhost:8000/api/v1/products?category=electronics&min_price=25&so
 
 ## Development checks
 
+Install the Chromium browser used by Playwright after syncing dependencies:
+
+```shell
+uv run playwright install chromium
+```
+
 Run the complete test suite with coverage:
 
 ```shell
 uv run pytest
+```
+
+Pytest discovers tests under `tests/`, adds `src/` to the import path, and
+writes HTML coverage output to `htmlcov/`. Browser tests use Chromium by
+default and retain traces and screenshots when a test fails. The configured
+Playwright base URL is `http://localhost:8000`; start the API before running
+browser-based tests.
+
+Run only API or browser tests using the configured markers:
+
+```shell
+uv run pytest -m api
+uv run pytest -m e2e
 ```
 
 Lint and format-check the project:

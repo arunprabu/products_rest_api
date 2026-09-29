@@ -37,6 +37,7 @@ def _response(product: Product) -> ProductResponse:
     )
 
 
+# localhost:8000/api/v1/products - POST
 @router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(
     product: ProductCreate, service: ServiceDependency
@@ -45,6 +46,7 @@ def create_product(
     return _response(service.create(product))
 
 
+# localhost:8000/api/v1/products - GET
 @router.get("", response_model=ProductListResponse)
 def list_products(
     service: ServiceDependency,
@@ -59,7 +61,7 @@ def list_products(
     """List/filter/sort products with bounded offset pagination."""
     if min_price is not None and max_price is not None and min_price > max_price:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="min_price must be less than or equal to max_price",
         )
     products, total = service.list(
@@ -79,6 +81,7 @@ def list_products(
     )
 
 
+# localhost:8000/api/v1/products/{product_id} - GET
 @router.get("/{product_id}", response_model=ProductResponse)
 def get_product(product_id: int, service: ServiceDependency) -> ProductResponse:
     """Retrieve one product by ID."""
@@ -90,6 +93,7 @@ def get_product(product_id: int, service: ServiceDependency) -> ProductResponse:
     return _response(product)
 
 
+# localhost:8000/api/v1/products/{product_id} - PUT
 @router.put("/{product_id}", response_model=ProductResponse)
 def update_product(
     product_id: int, product: ProductUpdate, service: ServiceDependency
@@ -103,6 +107,7 @@ def update_product(
     return _response(updated)
 
 
+# localhost:8000/api/v1/products/{product_id} - DELETE
 @router.delete("/{product_id}", response_model=MessageResponse)
 def delete_product(product_id: int, service: ServiceDependency) -> MessageResponse:
     """Delete a product."""

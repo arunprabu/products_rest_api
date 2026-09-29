@@ -8,3 +8,45 @@ dependencies = [
     "fastapi>=0.115,<1.0",
     "uvicorn[standard]>=0.34,<1.0",
 ]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27,<1",
+    "httpx2>=2.13.1",
+    "pytest>=8.3,<10",
+    "pytest-cov>=6,<8",
+    "pytest-playwright>=0.7,<1",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--strict-config",
+    "--strict-markers",
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--tracing=retain-on-failure",
+    "--screenshot=only-on-failure",
+]
+testpaths = ["tests"]
+pythonpath = ["src"]
+base_url = "http://localhost:8000"
+markers = [
+    "api: API integration tests",
+    "e2e: browser-based end-to-end tests",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
