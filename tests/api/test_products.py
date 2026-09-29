@@ -141,7 +141,7 @@ def test_list_products_returns_default_empty_page(client: TestClient) -> None:
     }
 
 
-def test_list_products_filters_sorts_and_paginates(client: TestClient) -> None:
+def _seed_products(client: TestClient) -> list[ProductPayload]:
     products = [
         _product_payload(
             title="Wireless Headphones",
@@ -170,24 +170,86 @@ def test_list_products_filters_sorts_and_paginates(client: TestClient) -> None:
     ]
     for payload in products:
         _create_product(client, payload)
+    return products
+
+
+def test_list_products_filters_category_case_insensitively(
+    client: TestClient,
+) -> None:
+    products = _seed_products(client)
+
+    response = client.get(PRODUCTS_URL, params={"category": "ELECTRONICS"})
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "items": [
+            {"id": 1, **products[0]},
+            {"id": 3, **products[2]},
+            {"id": 4, **products[3]},
+        ],
+        "total": 3,
+        "limit": 20,
+        "offset": 0,
+    }
+
+
+def test_list_products_filters_by_price_range(client: TestClient) -> None:
+    products = _seed_products(client)
+
+    response = client.get(
+        PRODUCTS_URL,
+        params={"min_price": 30, "max_price": 100},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "items": [
+            {"id": 1, **products[0]},
+            {"id": 3, **products[2]},
+        ],
+        "total": 2,
+        "limit": 20,
+        "offset": 0,
+    }
+
+
+def test_list_products_sorts_by_price_descending(client: TestClient) -> None:
+    products = _seed_products(client)
 
     response = client.get(
         PRODUCTS_URL,
         params={
-            "category": "ELECTRONICS",
-            "min_price": 30,
-            "max_price": 100,
             "sort_by": "price",
             "order": "desc",
-            "limit": 1,
-            "offset": 1,
         },
     )
 
     assert response.status_code == 200
     assert response.json() == {
-        "items": [{"id": 3, **products[2]}],
-        "total": 2,
+        "items": [
+            {"id": 4, **products[3]},
+            {"id": 1, **products[0]},
+            {"id": 3, **products[2]},
+            {"id": 2, **products[1]},
+        ],
+        "total": 4,
+        "limit": 20,
+        "offset": 0,
+    }
+
+
+def test_list_products_paginates_and_preserves_total(client: TestClient) -> None:
+    products = _seed_products(client)
+
+    response = client.get(
+        PRODUCTS_URL,
+        params={"limit": 1, "offset": 1},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "items": [{"id": 2, **products[1]}],
+        "total": 4,
         "limit": 1,
         "offset": 1,
     }
