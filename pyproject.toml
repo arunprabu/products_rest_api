@@ -13,6 +13,7 @@ dependencies = [
 dev = [
     "httpx>=0.27,<1",
     "httpx2>=2.13.1",
+    "mypy>=1.11,<2",
     "pytest>=8.3,<10",
     "pytest-cov>=6,<8",
     "pytest-playwright>=0.7,<1",
@@ -35,6 +36,10 @@ markers = [
     "api: API integration tests",
     "e2e: browser-based end-to-end tests",
 ]
+
+[tool.mypy]
+explicit_package_bases = true
+mypy_path = "src"
 
 [tool.coverage.run]
 branch = true
