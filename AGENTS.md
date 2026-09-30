@@ -120,7 +120,35 @@ GitHub Actions workflows live in `.github/workflows/`.
   - `build-and-push`: builds the image and pushes to GHCR as `ghcr.io/<owner>/<repo>:<sha>` and `:latest`.
   - `deploy`: pulls the image on the target host over SSH and restarts the container, gated by the `production` environment.
 
-Required repository secrets: `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_USER`. GHCR uses the built-in `GITHUB_TOKEN`. Protect `main` and require the `Lint, format, type-check`, `Tests (API)`, and `E2E (Playwright)` checks.
+Required repository secrets: `DEPLOY_SSH_KEY`, `DEPLOY_HOST`, `DEPLOY_USER`. GHCR uses the built-in `GITHUB_TOKEN`. Protect `main` and require the `Lint, format, type-check`, `Dependency audit`, `Tests (API)`, and `E2E (Playwright)` checks.
+
+## Commit messages
+
+All commits MUST follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
+
+```text
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+- Use a lowercase `type` from: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+- Use an optional scope naming the affected area, e.g. `api`, `services`, `repositories`, `schemas`, `db`, `core`, `deps`, `ci`.
+- Write the description in the imperative mood, lowercase, with no trailing period (e.g. `add price range filter`).
+- Mark breaking changes with `!` after the type/scope (e.g. `feat(api)!: ...`) and/or a `BREAKING CHANGE:` footer.
+- Reference issues in the footer (e.g. `Refs: #123`, `Closes: #123`).
+
+Examples:
+
+```text
+feat(api): add price range filter to product listing
+fix(repositories): escape category before LIKE match
+docs: document Conventional Commits workflow
+test(services): cover duplicate product creation
+chore(deps): bump fastapi to 0.115
+```
 
 ## Conventions
 

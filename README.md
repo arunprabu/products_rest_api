@@ -211,6 +211,45 @@ Apply Ruff formatting:
 uv run ruff format src tests
 ```
 
+## Contributing
+
+### Commit messages
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+Every commit message must use the form:
+
+```text
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+- **type** — one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+- **scope** (optional) — the affected area, e.g. `api`, `services`, `repositories`, `schemas`, `db`, `core`, `deps`, `ci`.
+- **description** — imperative mood, lowercase, no trailing period.
+
+Mark breaking changes with `!` after the type/scope (e.g. `feat(api)!: ...`) and/or a
+`BREAKING CHANGE:` footer. Reference issues in the footer (e.g. `Closes: #123`).
+
+Examples:
+
+```text
+feat(api): add price range filter to product listing
+fix(repositories): escape category before LIKE match
+docs: document Conventional Commits workflow
+test(services): cover duplicate product creation
+chore(deps): bump fastapi to 0.115
+```
+
+### Workflow
+
+1. Create a branch for your change (e.g. `feat/price-range-filter`).
+2. Make the change and add or update tests.
+3. Run the development checks above (`pytest`, `ruff`, `mypy`).
+4. Commit using a Conventional Commit message and open a pull request.
+
 ## Docker
 
 Build the image:
