@@ -1,0 +1,28 @@
+# Pre-commit hooks for the products REST API.
+#
+# Install once per clone with:
+#   uv run pre-commit install
+#
+# The hooks run the project's own Ruff (via `uv run`) so local checks match CI
+# exactly. A failing hook aborts the commit; fix the reported issues and retry.
+default_install_hook_types: [pre-commit]
+fail_fast: false
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff format
+        description: Format Python files with Ruff.
+        entry: uv run ruff format
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: ruff-check
+        name: ruff check
+        description: Lint Python files with Ruff and apply safe fixes.
+        entry: uv run ruff check --fix
+        language: system
+        types_or: [python, pyi]
+        require_serial: true

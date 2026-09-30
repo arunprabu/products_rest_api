@@ -12,6 +12,12 @@ uv sync --dev
 
 `uv run` executes commands inside `.venv` automatically; no manual activation needed.
 
+Enable the pre-commit hooks once per clone (runs Ruff format + lint on staged files and blocks the commit on failure):
+
+```shell
+uv run pre-commit install
+```
+
 ## Commands
 
 Run the API locally:
@@ -46,6 +52,8 @@ uv run mypy src tests
 ```
 
 Always run `pytest`, `ruff check`, `ruff format --check`, and `mypy` after modifying code.
+
+Pre-commit hooks (`.pre-commit-config.yaml`) run `ruff format` and `ruff check --fix` on staged Python files and abort the commit on failure. Run them across the whole tree with `uv run pre-commit run --all-files`.
 
 Build and run the container:
 
@@ -112,6 +120,7 @@ GitHub Actions workflows live in `.github/workflows/`.
 
 - `ci.yml` — runs on pushes and pull requests to `main`, and is reusable via `workflow_call`.
   - `quality`: `ruff format --check`, `ruff check`, `mypy`.
+  - `audit`: `pip-audit` against the locked environment, enriched with OSV severity; fails on HIGH/CRITICAL findings (`scripts/audit_dependencies.py`).
   - `test`: `pytest -m api` with coverage; uploads `coverage.xml`.
   - `e2e`: `pytest -m e2e` with Chromium; uploads traces/screenshots on failure.
   - `test` and `e2e` run only after `quality` passes.

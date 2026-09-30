@@ -211,6 +211,28 @@ Apply Ruff formatting:
 uv run ruff format src tests
 ```
 
+### Pre-commit hooks
+
+The repository ships a [pre-commit](https://pre-commit.com/) configuration that
+runs Ruff formatting and linting on staged Python files. A failing hook aborts
+the commit, so lint or format errors cannot be committed.
+
+Enable the hooks once per clone:
+
+```shell
+uv run pre-commit install
+```
+
+After that, `git commit` automatically runs `ruff format` and `ruff check --fix`
+against the staged files. To run the hooks manually against the whole tree:
+
+```shell
+uv run pre-commit run --all-files
+```
+
+The hooks invoke the project's own Ruff through `uv run`, so local results match
+the CI `quality` job exactly.
+
 ## Contributing
 
 ### Commit messages
