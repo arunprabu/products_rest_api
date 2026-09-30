@@ -17,7 +17,11 @@ dev = [
     "pytest>=8.3,<10",
     "pytest-cov>=6,<8",
     "pytest-playwright>=0.7,<1",
+    "ruff>=0.6,<1",
 ]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
 
 [tool.pytest.ini_options]
 addopts = [
