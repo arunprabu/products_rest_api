@@ -210,3 +210,74 @@ Apply Ruff formatting:
 ```shell
 uv run ruff format src tests
 ```
+
+## Docker
+
+Build the image:
+
+```shell
+docker build -t products-rest-api:local .
+```
+
+Run the container (the SQLite database is persisted in a named volume):
+
+```shell
+docker run --rm -p 8000:8000 -v products-data:/app/data products-rest-api:local
+```
+
+Or use Docker Compose:
+
+```shell
+docker compose up --build
+```
+
+The image is a multi-stage build that installs runtime dependencies from
+`uv.lock` with `uv`, runs as an unprivileged `app` user, and exposes a
+`HEALTHCHECK` against `/openapi.json`. Runtime configuration is supplied
+through environment variables (`DATABASE_PATH`, `LOG_LEVEL`); mount a volume
+at `/app/data` so the database survives container restarts.
+
+## CI/CD
+
+Continuous integration and deployment run on GitHub Actions.
+
+### CI (`.github/workflows/ci.yml`)
+
+Runs on pushes and pull requests targeting `main`, and is reusable via
+`workflow_call`:
+
+- **quality** — Ruff format check, Ruff lint, and strict mypy.
+- **test** — API tests with coverage (`pytest -m api`), uploading `coverage.xml`.
+- **e2e** — Playwright browser tests (`pytest -m e2e`) with Chromium; traces and
+  screenshots are uploaded when a test fails.
+
+The `test` and `e2e` jobs run only after `quality` passes.
+
+### CD (`.github/workflows/cd.yml`)
+
+Runs on pushes to `main` (and manually via `workflow_dispatch`):
+
+1. **ci** — reuses the CI workflow so a red commit is never deployed.
+2. **build-and-push** — builds the Docker image and pushes it to GitHub
+   Container Registry as `ghcr.io/<owner>/<repo>:<sha>` and `:latest`.
+3. **deploy** — pulls the image on the target host over SSH and restarts the
+   container, gated by the `production` environment.
+
+### Required configuration
+
+Add these repository secrets (Settings → Secrets and variables → Actions):
+
+| Secret           | Purpose                         |
+| ---------------- | ------------------------------- |
+| `DEPLOY_SSH_KEY` | Private key for the deploy host |
+| `DEPLOY_HOST`    | Target hostname or IP           |
+| `DEPLOY_USER`    | SSH user on the target host     |
+
+Create a `production` environment (Settings → Environments) to require manual
+approval and scope deployment secrets. The workflow uses the built-in
+`GITHUB_TOKEN` for GHCR, so no extra registry credentials are needed.
+
+### Branch protection
+
+Protect `main` and require the `Lint, format, type-check`, `Tests (API)`, and
+`E2E (Playwright)` status checks before merging.

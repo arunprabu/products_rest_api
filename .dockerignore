@@ -1,0 +1,43 @@
+# Version control and CI
+
+.git/
+.github/
+.gitignore
+
+# Python artifacts
+
+**pycache**/
+_.py[cod]
+_.egg-info/
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Test and coverage output
+
+tests/
+htmlcov/
+.coverage
+coverage.xml
+test-results/
+
+# Local data and environment files (never ship secrets or local DBs)
+
+data/
+.env\*
+!.env.example
+
+# Editor and OS noise
+
+.vscode/
+.idea/
+.DS_Store
+
+# Docs and agent tooling
+
+\*.md
+.agents/
+.claude/
+.firecrawl/
+skills-lock.json
