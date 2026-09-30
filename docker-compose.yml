@@ -1,0 +1,18 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: products-rest-api:local
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_PATH: /app/data/products.db
+      LOG_LEVEL: INFO
+    volumes:
+      # Persist the SQLite database across container restarts.
+      - products-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  products-data:
