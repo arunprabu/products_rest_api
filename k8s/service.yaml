@@ -1,0 +1,25 @@
+# ClusterIP Service for the Products REST API Deployment (k8s/deployment.yaml).
+#
+# The selector below matches the Deployment's pod template labels exactly:
+#   app.kubernetes.io/name: products-rest-api
+#   app.kubernetes.io/component: api
+#
+# ClusterIP is internal-only; no cloud load balancer is created. Reach it locally
+# with `kubectl port-forward` (see README / notes below).
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-rest-api
+  labels:
+    app.kubernetes.io/name: products-rest-api
+    app.kubernetes.io/component: api
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: products-rest-api
+    app.kubernetes.io/component: api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP
