@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Note: Do not assume everything on your own. If the request/prompt/query is ambiguous, ask questions at the user.
+
 ## Project overview
 
 Product catalog REST API built with Python 3.12+, FastAPI, and SQLite, using a `src` layout. Layers are separated: HTTP routing, business logic, persistence, schemas, configuration, and domain models.

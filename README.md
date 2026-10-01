@@ -2,6 +2,8 @@
 
 A production-minded product catalog REST API built with Python 3.12+, FastAPI, and SQLite. The project uses a `src` layout and separates HTTP routing, business logic, persistence, schemas, configuration, and domain models.
 
+Note: Do not assume everything on your own. If the request/prompt/query is ambiguous, ask questions at the user.
+
 ## Features
 
 - Create, retrieve, replace, list, and delete products
